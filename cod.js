@@ -3,8 +3,8 @@ let seconda = null;
 let blocco = false;  // blocca click mentre due carte sono scoperte
 function mischia(array) {
     for (let i = 0; i < array.length; i++) {
-    let j = Math.floor(Math.random() * array.length);
-    [array[i], array[j]] = [array[j], array[i]]; //questo mette la foto di i nel posto di j e la foto j al posto di i, in modo da mischiarli
+        let j = Math.floor(Math.random() * array.length);
+        [array[i], array[j]] = [array[j], array[i]]; //questo mette la foto di i nel posto di j e la foto j al posto di i, in modo da mischiarli
     }
 }
 function genera(){
@@ -37,43 +37,58 @@ function genera(){
     if (d == "m") div.classList.add("media");
     if (d == "d") div.classList.add("difficile");
     let images = [
-    "img/albero.jpg",
-    "img/anguria.png",
-    "img/babbonatale.jpg",
-    "img/fragola.jpg",
-    "img/mela.jpg",
-    "img/pera.avif",
-    "img/albero.jpg",
-    "img/anguria.png",
-    "img/babbonatale.jpg",
-    "img/fragola.jpg",
-    "img/mela.jpg",
-    "img/pera.avif" //ci sono 6 carte uguali alle altre perché devono comparire 2 volte
+        "img/albero.jpg",
+        "img/anguria.png",
+        "img/babbonatale.jpg",
+        "img/fragola.jpg",
+        "img/mela.jpg",
+        "img/pera.avif",
+        "img/albero.jpg",
+        "img/anguria.png",
+        "img/babbonatale.jpg",
+        "img/fragola.jpg",
+        "img/mela.jpg",
+        "img/pera.avif" //ci sono 6 carte uguali alle altre perché devono comparire 2 volte
     ];
     mischia(images); //mischia le carte
-for (let i = 0; i < colonne * righe; i++) {
-    let img = document.createElement("img");
-    img.src = "img/sfondonero.jpg";          // carta coperta
-    img.dataset.valore = images[i];       //salva l'immagine dietro alla sfondo nero
-    img.onclick = function () { 
-        gira(this); //// gira la carta cliccata
-    };
-    div.appendChild(img);
+    let matrice = [];
+    let k = 0;
+    for (let i = 0; i < righe; i++) {
+        matrice[i] = [];
+        for (let j = 0; j < colonne; j++) {
+            matrice[i][j] = images[k]; //nella riga i, colonna j, metti l'immagine k
+            k++;
+        }
+    }
+
+    // creazione delle carte usando la matrice
+    for (let i = 0; i < righe; i++) {
+        for (let j = 0; j < colonne; j++) {
+            let img = document.createElement("img");
+            img.src = "img/sfondonero.jpg";          // carta coperta
+            img.dataset.valore = matrice[i][j];     //salva l'immagine dietro alla sfondo nero su HTML
+            img.onclick = function () { 
+                if (!blocco) gira(this); //// gira la carta cliccata se blocco non è true
+            };
+            div.appendChild(img);
+        }
+    }
 }
-}
+
 function gira(carta){
     carta.src = carta.dataset.valore;//mostra la carte
+
     if (prima == null){//sono al primo click
         prima = carta;//memorizza la carta che hai cliccato
     } else {
         seconda = carta;//memorizza la seconda carta che hai cliccato
         blocco = true;//blocca il programma fino a quando non finisce questo codice
         if (prima.dataset.valore === seconda.dataset.valore){ // carte uguali
-                 prima = null;    // reset prima carta
-                seconda = null;  // reset seconda carta
-                blocco = false;
+            prima = null;    // reset prima carta
+            seconda = null;  // reset seconda carta
+            blocco = false;
         } else {
-            setTimeout(() => {
+            setTimeout(() => {// carte non sono uguali
                 prima.src = "img/sfondonero.jpg";
                 seconda.src = "img/sfondonero.jpg";
                 prima = null;
